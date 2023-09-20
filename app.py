@@ -113,22 +113,23 @@ qa = RetrievalQA.from_chain_type(
         return_source_documents=True
 )
 
-# *** FLASK CODE ***
-from flask import Flask, jsonify, request
+# *** FASTAPI CODE ***
+from fastapi import FastAPI
+# import uvicorn
 
-app = Flask(__name__)
+app = FastAPI(title='OpenPages QuikBot')
 
-@app.route('/')
-def hello():
+@app.get('/')
+def hello_world():
     return "Hello World!"
 
-@app.route('/test/<value>')
-def test(value):
+@app.get('/test/{value}')
+def test(value: str):
     return 'Here is the query string passed: %s' % value
 
-@app.route('/qa', methods=['POST'])
-def respond():
-    query = request.args.get('question')
+@app.post('/qa')
+def respond(question: str):
+    query = question
     print('Here is the query: %s' % query)
     if (query is not None and len(query.strip()) > 0):
         response = generateResponse(query, qa)
@@ -138,7 +139,7 @@ def respond():
     data = {
         'answer' : response
     }
-    return jsonify(data)
+    return data
 
 # if __name__ == '__main__':
-#     app.run(host="0.0.0.0", port=5002, debug=True)
+#     uvicorn.run('app:app', host='0.0.0.0', port=8000, reload=True)
