@@ -1,102 +1,51 @@
 {
-  "openapi": "3.1.0",
-  "info": { "title": "OpenPages QuikBot", "version": "0.1.0" },
+  "openapi": "3.0.3",
+  "info": {
+    "title": "OpenPages QuikBot",
+    "description": "Used to respond to general queries about OpenPages",
+    "version": "1.0.0"
+  },
+  "servers": [
+    {
+      "url": "https://openpages-quikbot.up.railway.app"
+    }
+  ],
   "paths": {
-    "/": {
-      "get": {
-        "summary": "Hello World",
-        "operationId": "hello_world__get",
-        "responses": {
-          "200": {
-            "description": "Successful Response",
-            "content": { "application/json": { "schema": {} } }
-          }
-        }
-      }
-    },
-    "/test/{value}": {
-      "get": {
-        "summary": "Test",
-        "operationId": "test_test__value__get",
-        "parameters": [
-          {
-            "required": true,
-            "schema": { "type": "string", "title": "Value" },
-            "name": "value",
-            "in": "path"
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "Successful Response",
-            "content": { "application/json": { "schema": {} } }
-          },
-          "422": {
-            "description": "Validation Error",
-            "content": {
-              "application/json": {
-                "schema": { "$ref": "#/components/schemas/HTTPValidationError" }
-              }
-            }
-          }
-        }
-      }
-    },
     "/qa": {
       "post": {
-        "summary": "Respond",
-        "operationId": "respond_qa_post",
+        "description": "Endpoint to respond to a question",
         "parameters": [
           {
-            "required": true,
-            "schema": { "type": "string", "title": "Question" },
             "name": "question",
-            "in": "query"
+            "in": "query",
+            "description": "Question to be Asked",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
           }
         ],
         "responses": {
           "200": {
-            "description": "Successful Response",
-            "content": { "application/json": { "schema": {} } }
-          },
-          "422": {
-            "description": "Validation Error",
+            "description": "successful operation",
             "content": {
               "application/json": {
-                "schema": { "$ref": "#/components/schemas/HTTPValidationError" }
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "answer": {
+                      "description": "The generated response",
+                      "type": "string"
+                    }
+                  }
+                }
               }
             }
+          },
+          "default": {
+            "description": "Unexpected error"
           }
         }
-      }
-    }
-  },
-  "components": {
-    "schemas": {
-      "HTTPValidationError": {
-        "properties": {
-          "detail": {
-            "items": { "$ref": "#/components/schemas/ValidationError" },
-            "type": "array",
-            "title": "Detail"
-          }
-        },
-        "type": "object",
-        "title": "HTTPValidationError"
-      },
-      "ValidationError": {
-        "properties": {
-          "loc": {
-            "items": { "anyOf": [{ "type": "string" }, { "type": "integer" }] },
-            "type": "array",
-            "title": "Location"
-          },
-          "msg": { "type": "string", "title": "Message" },
-          "type": { "type": "string", "title": "Error Type" }
-        },
-        "type": "object",
-        "required": ["loc", "msg", "type"],
-        "title": "ValidationError"
       }
     }
   }
